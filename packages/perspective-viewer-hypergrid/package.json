@@ -14,7 +14,7 @@
     "hypergrid": "webpack --config src/config/hypergrid.plugin.config.js",
     "start": "npm run hypergrid",
     "compile_test": "cp test/html/* build",
-    "test": "jest --runInBand 2>&1",
+    "test": "jest --silent --runInBand 2>&1",
     "clean": "find build -mindepth 1 -delete"
   },
   "jest": {
@@ -35,7 +35,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.26.0",
-    "fin-hypergrid": "^2.1.7",
+    "fin-hypergrid": "2.1.7",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
