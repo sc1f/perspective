@@ -1,5 +1,6 @@
 {
 	"devDependencies": {
+		"docusaurus": "^1.1.5",
 		"lerna": "^2.5.1"
 	},
 	"scripts": {
