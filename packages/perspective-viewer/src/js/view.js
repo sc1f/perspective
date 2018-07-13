@@ -13,7 +13,7 @@ import "awesomplete";
 import "awesomplete/awesomplete.css";
 
 import perspective from "@jpmorganchase/perspective/src/js/perspective.parallel.js";
-import {bindTemplate, json_attribute, array_attribute} from "./utils.js";
+import {bindTemplate, json_attribute, array_attribute, copy_to_clipboard} from "./utils.js";
 
 import template from "../html/view.html";
 
@@ -549,6 +549,7 @@ function update() {
         aggregate: aggregates,
         sort: sort
     });
+    
     this._view.on_update(() => {
         if (!this._debounced) {
             let view_count = document.getElementsByTagName('perspective-viewer').length;
@@ -557,11 +558,15 @@ function update() {
             this._debounced = setTimeout(() => {
                 this._debounced = undefined;
                 const timer = this._render_time();
-                if (this._task) {
+                if (this._task && !this._task.initial) {
                     this._task.cancel();
-                }
+                } 
                 const task = this._task = new CancelTask();
-                this._plugin.create.call(this, this._datavis, this._view, task).then(() => {
+                let updater = this._plugin.update;
+                if (!updater) {
+                    updater = this._plugin.create;
+                }
+                updater.call(this, this._datavis, this._view, task).then(() => {
                     timer();
                     task.cancel();
                 }).catch(err => {
@@ -579,6 +584,7 @@ function update() {
     const task = this._task = new CancelTask(() => {
         this._render_count--;
     });
+    task.initial = true;
 
     this._plugin.create.call(this, this._datavis, this._view, task).catch(err => {
         console.warn(err);
@@ -600,7 +606,17 @@ function update() {
  *
  */
 
- class ViewPrivate extends HTMLElement {
+function _fill_numeric(cols, pref, bypass = false) {
+    for (let col of cols) {
+        let type = col.getAttribute('type');
+        let name = col.getAttribute('name');
+        if (bypass || ['float', 'integer'].indexOf(type) > -1 && pref.indexOf(name) === -1) {
+            pref.push(name);
+        }
+    }      
+}
+
+class ViewPrivate extends HTMLElement {
 
     _render_time() {
         const t = performance.now();
@@ -618,23 +634,28 @@ function update() {
 
     _set_column_defaults() {
         let cols = Array.prototype.slice.call(this.querySelectorAll("#inactive_columns perspective-row"));
+        let current_cols = Array.prototype.slice.call(this.querySelectorAll("#active_columns perspective-row"));
         if (cols.length > 0) {
             if (this._plugin.initial) {
                 let pref = [];
                 let count = this._plugin.initial.count || 2;
-                if (this._plugin.initial.type === 'number') {
-                    for (let col of cols) {
-                        let type = col.getAttribute('type');
-                        if (['float', 'integer'].indexOf(type) > -1) {
-                            pref.push(col.getAttribute('name'));
-                        }
-                    }
+                if (current_cols.length === count) {
+                    pref = current_cols.map(x => x.getAttribute('name'));
+                } else if (current_cols.length < count) {
+                    pref = current_cols.map(x => x.getAttribute('name'));
+                    _fill_numeric(cols, pref);                          
                     if (pref.length < count) {
-                        for (let col of cols) {
-                            if (pref.indexOf(col.getAttribute('name')) === -1) {
-                                pref.push(col.getAttribute('name'));
-                            }
-                        }                            
+                        _fill_numeric(cols, pref, true);                            
+                    }
+                } else {
+                    if (this._plugin.initial.type === 'number') {
+                        _fill_numeric(current_cols, pref);
+                        if (pref.length < count) {
+                            _fill_numeric(cols, pref);                          
+                        }
+                        if (pref.length < count) {
+                            _fill_numeric(cols, pref, true);                            
+                        }
                     }
                 }
                 this.setAttribute('columns', JSON.stringify(pref.slice(0, count)));
@@ -1276,6 +1297,37 @@ class View extends ViewPrivate {
         this.setAttribute('view', Object.keys(RENDERERS)[0]);
         this.dispatchEvent(new Event('perspective-config-update'));
     }
+
+    /**
+     * Copies this element's view data (as a CSV) to the clipboard.  This method
+     * must be called from an event handler, subject to the browser's 
+     * restrictions on clipboard access.  See 
+     * {@link https://www.w3.org/TR/clipboard-apis/#allow-read-clipboard}.
+     * 
+     */
+    handleClipboardCopy(options) {
+        let data
+        if (!this._view) {
+            console.warn("No view to copy - skipping");
+            return;
+        }
+        this._view.to_csv(options).then(csv => {
+            data = csv;
+        }).catch(err => {
+            console.error(err);
+            data = "";
+        });
+        let count = 0, f = () => {
+            if (typeof data !== "undefined") {
+                copy_to_clipboard(data);
+            } else if (count < 50) {
+                count++;
+                setTimeout(f, 50);
+            }
+        }
+        f();
+    }
+    
 }
 
 /**

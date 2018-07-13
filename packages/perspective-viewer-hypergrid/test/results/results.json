@@ -1,15 +1,14 @@
 {
-    "superstore.html/shows a grid without any settings applied.": "2527fc7e3c6dfdbf9082c6543fa579df",
-    "superstore.html/pivots by a row.": "9503b08e1a0b0edc9c2e3518596f6873",
-    "superstore.html/pivots by two rows.": "66f100c65a983dfa37c186185ad70c5d",
-    "superstore.html/pivots by a row and a column.": "5a38fdf218b20f65a9b45f70ef80c3bc",
-    "superstore.html/pivots by two rows and two columns.": "e4c88b9789f832fc2954f6df73264bfb",
-    "superstore.html/sorts by a numeric column.": "e7eb6cc8e7f3449bb599958c63f687a7",
-    "superstore.html/sorts by an alpha column.": "3485a65a1540a1ef3b3801381cfc61d4",
-    "superstore.html/displays visible columns.": "eea02565d7bb122bc30756895c5f334c",
-    "superstore.html/resets viewable area when the logical size expands.": "2110a85755c45a1514b9b8cdc6d2bce6",
-    "superstore.html/selecting a column does not log a context deleted error.": "2563581d3556c4576745443c8498bea9",
-    "superstore.html/resets viewable area when the physical size expands.": "2527fc7e3c6dfdbf9082c6543fa579df",
-    "superstore.html/sorts by a hidden column.": "863281ce6ea2873c95e72c627e3caa07",
-    "superstore.html/filters by a numeric column.": "c975691a196a48af12bd53552c7de6e6"
+    "superstore.html/shows a grid without any settings applied.": "06d6fd510df414cb9488308ba022a2ae",
+    "superstore.html/pivots by a row.": "ddba312068a61f206563a60a0fe8e1b9",
+    "superstore.html/pivots by two rows.": "40df094c9645474673dff35335b09c7f",
+    "superstore.html/pivots by a row and a column.": "50b33ef86fceebe0177e7728c945ccd4",
+    "superstore.html/pivots by two rows and two columns.": "e892120e7c5f329df98262773b681d62",
+    "superstore.html/sorts by a numeric column.": "c9c15ec5fc6805a2817b414f1231dd3e",
+    "superstore.html/sorts by an alpha column.": "1fe8edf37ea1368d12c1fee4ac5fe200",
+    "superstore.html/displays visible columns.": "9875d344019f5ca9560c8fe7ce5214ed",
+    "superstore.html/resets viewable area when the logical size expands.": "9c27c38f07f4b36675688014d59b3a2a",
+    "superstore.html/resets viewable area when the physical size expands.": "06d6fd510df414cb9488308ba022a2ae",
+    "superstore.html/sorts by a hidden column.": "ea00be250ccb802714cbbf272b9cbea9",
+    "superstore.html/filters by a numeric column.": "bc011351efde88c1b154d9c712fa7d2f"
 }
